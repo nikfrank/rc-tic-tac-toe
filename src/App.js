@@ -81,6 +81,8 @@ const cpChoose = board=> {
 // undo / redo
 // deploy to pwa via manifest.json
 // refactor threats function, legalMoves function
+// testing coverage for loc
+// testing coverage for cp moves 
 
 
 function App() {
