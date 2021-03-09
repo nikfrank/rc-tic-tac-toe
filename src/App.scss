@@ -20,6 +20,17 @@
       border: 1px solid black;
       flex-grow: 1;
 
+      &.my-win {
+        background-color: #04c2a080;
+      }
+      &.opp-win {
+        background-color: #c204a080;
+      }
+      &.hint {
+        background-color: pink;
+      }
+
+
       path {
         fill: red;
       }
