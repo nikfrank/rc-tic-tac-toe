@@ -9,7 +9,7 @@ const initBoard = [
   ['', '', ''],
 ];
 
-const wins = [
+const paths = [
   [[0, 0], [0,1], [0,2]],
   [[0, 0], [1,0], [2,0]],
   [[0, 0], [1,1], [2,2]],
@@ -24,10 +24,45 @@ const wins = [
   [[2, 0], [2,1], [2,2]],
 ];
 
+const wins = (board)=> paths
+  .map(path=> path.reduce((t, [r, c])=> (t + board[r][c]), ''))
+  .filter(l=> l.match(/(.)\1{2}/));
+
+const boardAfterMove = (board) => ([r, c])=> board.map(
+  (row, ri)=> ri !== r ?
+    row :
+    row.map((col, ci)=> ci !== c ?
+    col :
+    board.flat().join('').length % 2 ? 'O' : 'X'
+  )
+);
+
+
 const cpChoose = board=> {
+  // list of legal moves
+  const legalMoves = Array(9)
+  .fill(0)
+  .map((o,i)=>[
+    Math.floor(i / 3),
+    i % 3,
+  ]).filter(([r, c])=> !board[r][c]);
+
+  const lines = legalMoves.map(boardAfterMove(board));
+  const winningLine = lines.findIndex(wins);
+
   // if there's a winning move, play it.
+  if( ~winningLine ) return legalMoves[winningLine];
+
   // if there's one move left, play it.
+  if( legalMoves.length === 1 ) return legalMoves[0];
+
   // if opponent has one threat, block it.
+  const oppLines = legalMoves.map(boardAfterMove([...board, '!']));
+  const oppThreat = oppLines.findIndex(wins);
+  const oppThreats = oppLines.filter(wins);
+
+  if( oppThreats.length === 1 ) return legalMoves[oppThreat];
+
   // if a move can make 2 threats to 0, play it.
   // if a move allows the opponent 2 threats to 0, don't play it.
   // otherwise, just play a move (prefer to make a threat)
@@ -41,6 +76,13 @@ const cpChoose = board=> {
 
 };
 
+// more ideas:
+// winning triple spins
+// undo / redo
+// deploy to pwa via manifest.json
+// refactor threats function, legalMoves function
+
+
 function App() {
   const [status, setStatus] = useState('playing');
   const [board, setBoard] = useState(initBoard);
@@ -51,20 +93,12 @@ function App() {
     //if( !cpMove && board.flat().join('').length % 2 ) return;
 
     setBoard(
-      board.map((row, ri)=> ri !== r ?
-        row :
-        row.map((col, ci)=> ci !== c ?
-        col :
-        board.flat().join('').length % 2 ? 'O' : 'X'
-      ))
-    )
+      boardAfterMove(board)([r, c])
+    );
   };
 
   useEffect(()=> {
-    const winningLines =
-      wins
-        .map(win=> win.reduce((t, [r, c])=> (t + board[r][c]), ''))
-        .filter(l=> l.match(/(.)\1{2}/));
+    const winningLines = wins(board);
 
     if( winningLines.length )
       setStatus(winningLines[0][0] + ' won');
