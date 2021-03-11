@@ -3,6 +3,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
+  .status-title {
+    position: fixed;
+    top: 5px;
+    left: 5px;
+  }
 }
 
 .game {
@@ -19,12 +25,27 @@
     .square {
       border: 1px solid black;
       flex-grow: 1;
+      position: relative;
 
-      &.my-win {
-        background-color: #04c2a080;
+      &.my-win::after {
+        content: "";
+        position: absolute;
+        background-color: #04f240;
+        border-radius: 50%;
+        height: 12px;
+        width: 12px;
+        top: 2px;
+        left: 2px;
       }
-      &.opp-win {
-        background-color: #c204a080;
+      &.opp-win::before {
+        content: "";
+        position: absolute;
+        background-color: #a20480;
+        border-radius: 50%;
+        height: 12px;
+        width: 12px;
+        top: 2px;
+        right: 2px;
       }
       &.hint {
         background-color: pink;

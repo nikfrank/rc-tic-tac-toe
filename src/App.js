@@ -160,7 +160,7 @@ function App() {
   const clickSquare = (r, c, cpMove) => {
     if (status !== "playing") return;
     if (board[r][c]) return;
-    //if( !cpMove && board.flat().join('').length % 2 ) return;
+    if( !cpMove && board.flat().join('').length % 2 ) return;
 
     setBoard(boardAfterMove(board)([r, c]));
   };
@@ -172,9 +172,10 @@ function App() {
 
     if (!winningLines.length && board.flat().join("").length === 9)
       setStatus("nobody won");
-    else if (0 && board.flat().join("").length % 2) {
-      const [cpr, cpc] = cpChoose(board);
-      clickSquare(cpr, cpc, "cpMove");
+
+    else if (board.flat().join("").length % 2) {
+      const cpMove = cpChoose(board);
+      cpMove && clickSquare(...cpMove, "cpMove");
     }
   }, [board]);
 
@@ -199,7 +200,7 @@ function App() {
 
   return (
     <div className="App">
-      {status !== "playing" ? status : null}
+      {status !== "playing" ? <div className='status-title'>{status}</div> : null}
       <div className="game">
         {board.map((row, ri) => (
           <div key={ri} className="row">
