@@ -1,65 +1,39 @@
 .App {
-  text-align: center;
   display: flex;
   justify-content: center;
   align-items: center;
 
-  .status-title {
-    position: fixed;
-    top: 5px;
-    left: 5px;
-  }
+  height: 100vh;
 }
 
-.game {
+.board {
+  height: 80vmin;
+  width: 80vmin;
+
   display: flex;
   flex-direction: column;
-  width: 80vmin;
-  height: 80vmin;
-  margin: 10vmin auto;
 
   .row {
-    display: flex;
     flex-grow: 1;
+    display: flex;
 
     .square {
-      border: 1px solid black;
+      border: 1px solid #3c4144;
       flex-grow: 1;
-      position: relative;
 
-      &.my-win::after {
-        content: "";
-        position: absolute;
-        background-color: #04f240;
-        border-radius: 50%;
-        height: 12px;
-        width: 12px;
-        top: 2px;
-        left: 2px;
+      svg {
+        height: 100%;
+        width: 100%;
       }
-      &.opp-win::before {
-        content: "";
-        position: absolute;
-        background-color: #a20480;
-        border-radius: 50%;
-        height: 12px;
-        width: 12px;
-        top: 2px;
-        right: 2px;
+      
+      circle {
+        fill: transparent;
+        stroke: #088eb1;
+        stroke-width: 2;
       }
-      &.hint {
-        background-color: pink;
-      }
-
 
       path {
-        fill: red;
-      }
-
-      circle {
-        stroke-width: 1;
-        stroke: teal;
-        fill: transparent;
+        fill: #f41414;
       }
     }
   }
