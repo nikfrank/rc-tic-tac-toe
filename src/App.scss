@@ -11,15 +11,18 @@
   width: 80vmin;
 
   display: flex;
-  flex-direction: column;
 
-  .row {
+  position: relative;
+
+  .col {
     flex-grow: 1;
     display: flex;
+    flex-direction: column;
 
     .square {
       border: 1px solid #3c4144;
       flex-grow: 1;
+      max-height: calc( 100% / 3 - 2px );
 
       svg {
         height: 100%;
@@ -34,6 +37,21 @@
 
       path {
         fill: #f41414;
+      }
+    }
+  }
+
+  svg.WinningLine {
+    position: absolute;
+
+    line {
+      stroke-width: 1;
+
+      &.OOO {
+        stroke: green;
+      }
+      &.XXX {
+        stroke: orange;
       }
     }
   }

@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import './App.scss';
 
 import { Square } from './Square';
+import { WinningLine } from './WinningLine';
 
-import { winner } from './game-logic';
+import { winner, boardAfterMove } from './game-logic';
 
 const initBoard = [
   ['', '', ''],
@@ -14,32 +15,49 @@ const initBoard = [
 function App() {
   const [board, setBoard] = useState(initBoard);
 
-  const clickSquare = (r, c)=>{
-    const nextTurn = board.flat().join('').length % 2 ? 'O' : 'X';
-    
+  const clickSquare = (c, r)=>
     setBoard(
-      board.map((row, ri)=> r !== ri ? row : (
-        row.map((cell, ci)=> ((c !== ci) || cell) ? cell : (
-          nextTurn
-        ))
-      ))
+      boardAfterMove(board, c, r)
     );
-  };
 
-  console.log( winner(board) );
+  const currentWinner =
+    useMemo(
+      ()=> winner(board),
+      [board]
+    );
+
+  const currentWinnerString = useMemo(
+    ()=> currentWinner.join(),
+    [currentWinner]
+  );
+  
+  const winningPlayer = useMemo(
+    ()=> currentWinner.find(line=> line),
+    [currentWinnerString]
+  );
+    
+  const winningIndex = useMemo(
+    ()=> currentWinner.findIndex(line=> line),
+    [currentWinnerString]
+  );
+
+  useEffect(()=> {
+    if(winningPlayer)
+      setTimeout(()=> setBoard(initBoard), 3000);
+  }, [winningPlayer]);
   
   return (
     <div className="App">
       <div className='board'>
         {
-          board.map((row, ri)=> (
-            <div key={ri} className='row'>
+          board.map((col, ci)=> (
+            <div key={ci} className='col'>
               {
-                row.map((cell, ci)=> (
+                col.map((cell, ri)=> (
                   <div
-                    key={ci}
+                    key={ri}
                     className='square'
-                    onClick={()=> clickSquare(ri, ci)}
+                    onClick={()=> clickSquare(ci, ri)}
                   >
                     <Square value={cell} />
                   </div>
@@ -47,6 +65,14 @@ function App() {
               }
             </div>
           ))
+        }
+        {
+          winningPlayer ? (
+            <WinningLine
+              winner={winningPlayer}
+              index={winningIndex}
+            />
+          ) : null
         }
       </div>
     </div>
